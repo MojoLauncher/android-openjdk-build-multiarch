@@ -2398,6 +2398,13 @@ index 9371bc001..ab7dd0fc0 100644
  #endif
      if (err == -1) {
          throwUnixException(env, errno);
+@@ -80,5 +80,5 @@
+ // not relying on included headers.
+ 
+-#ifndef __GLIBC__
++#if !defined(__GLIBC__) && !defined(__ANDROID__)
+ // Alpine doesn't know these types, define them
+ typedef unsigned int       __uint32_t;
 diff --git a/src/java.desktop/unix/native/libawt/awt/awt_LoadLibrary.c b/src/java.desktop/unix/native/libawt/awt/awt_LoadLibrary.c
 index b2dedca35..c01ccfb8d 100644
 --- a/src/java.desktop/unix/native/libawt/awt/awt_LoadLibrary.c
