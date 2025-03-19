@@ -53,45 +53,6 @@ jobs:
           name: "jre${{ matrix.version }}-debuginfo-${{matrix.arch}}"
           path: dizout
 
-  build_iosport:
-    strategy:
-      matrix:
-        version: [17, 21]
-      fail-fast: false
-
-    name: "Build Java ${{ matrix.version }} for iOS aarch64"
-    runs-on: MacStadium
-    continue-on-error: true
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Build with CI build script
-        run: |
-          export PATH=/opt/procursus/bin:/opt/homebrew/bin:$PATH
-          export JAVA_HOME=$(/usr/libexec/java_home -v ${{ matrix.version }})
-          export BUILD_IOS=1
-          export TARGET_VERSION=${{ matrix.version }}
-          bash "1_ci_build_arch_aarch64.sh"
-
-      #    - name: Upload JDK build output
-      #      uses: actions/upload-artifact@v4
-      #      with:
-      #        name: "jdk17-ios-aarch64"
-      #        path: jdk17*.tar.xz
-
-      - name: Upload JRE build output
-        uses: actions/upload-artifact@v4
-        with:
-          name: "jre${{ matrix.version }}-ios-aarch64"
-          path: jre${{ matrix.version }}*.tar.xz
-
-      - name: Upload JRE debuginfo build output
-        uses: actions/upload-artifact@v4
-        with:
-          name: "jre${{ matrix.version }}-ios-debuginfo-aarch64"
-          path: dizout
-
   pojav:
     needs: build_android
     runs-on: ubuntu-22.04
