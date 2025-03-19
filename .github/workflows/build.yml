@@ -51,46 +51,6 @@ jobs:
         name: "jre8-debuginfo-${{matrix.arch}}"
         path: dizout
 
-  build_iosport:
-    name: "Build for iOS aarch64"
-    runs-on: MacStadium
-    continue-on-error: true
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: set up JDK 1.8
-      uses: actions/setup-java@v4
-      with:
-        java-version: 8
-        distribution: zulu
-
-    - name: Build with CI build script
-      run: |
-        export BUILD_IOS=1
-        #brew install awk
-        #echo "/opt/procursus/bin:/opt/procursus/local/bin:/Users/eilionoir/.local/bin:/opt/homebrew/bin:/Users/eilionoir/Library/Python/3.9/bin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Library/Apple/usr/bin:/opt/procursus/games" > $GITHUB_PATH
-        export PATH=/opt/procursus/bin:/opt/homebrew/bin:$PATH
-        bash "ci_build_arch_aarch64.sh"
-
-    - name: Upload JDK build output
-      uses: actions/upload-artifact@v4
-      with:
-        name: "jdk8-ios-aarch64"
-        path: jdk8*.tar.xz
-
-    - name: Upload JRE build output
-      uses: actions/upload-artifact@v4
-      with:
-        name: 'jre8-ios-aarch64'
-        path: jre8*.tar.xz
-
-    - name: Upload JRE debuginfo build output
-      uses: actions/upload-artifact@v4
-      with:
-        name: "jre8-ios-debuginfo-aarch64"
-        path: dizout
-
   pojav:
     needs: build_android
     runs-on: ubuntu-22.04
