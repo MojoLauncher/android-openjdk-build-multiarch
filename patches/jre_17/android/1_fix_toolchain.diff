@@ -326,6 +326,7 @@ index aef358c14..7b9e5097c 100644
      DISABLED_WARNINGS_gcc := unused-function, \
      DISABLED_WARNINGS_clang := sometimes-uninitialized format-nonliteral \
          self-assign, \
+     DISABLED_WARNINGS_microsoft_debugInit.c := 5287, \
      EXTRA_HEADER_DIRS := \
        include \
        libjdwp/export, \
