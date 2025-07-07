@@ -94,7 +94,7 @@ jobs:
       - name: Repack JRE
         run: |
           export TARGET_VERSION=${{ matrix.version }} && bash "9_repackjre.sh" $GITHUB_WORKSPACE/pojav $GITHUB_WORKSPACE/pojav/jre${{ matrix.version }}-pojav
-          zip -r $GITHUB_WORKSPACE/jre${{ matrix.version }}-pojav.zip $GITHUB_WORKSPACE/pojav/jre${{ matrix.version }}-pojav/
+          zip -j -r $GITHUB_WORKSPACE/jre${{ matrix.version }}-pojav.zip $GITHUB_WORKSPACE/pojav/jre${{ matrix.version }}-pojav/
 
       - name: Update release
         uses: svenstaro/upload-release-action@2.11.2
