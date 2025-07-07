@@ -2,10 +2,10 @@ name: Build OpenJDK 17 for Android and iOS
 
 on:
   push:
-  pull_request:
   workflow_dispatch:
-  schedule:
-    - cron: "0 1 1 */2 *"
+
+permissions:
+   contents: write
 
 jobs:
   build_android:
@@ -63,6 +63,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        
+      - name: Install zip
+        run: sudo apt -y install zip
 
       - name: Get jre${{ matrix.version }}-aarch32
         uses: actions/download-artifact@v4
@@ -89,10 +92,12 @@ jobs:
           path: pojav
 
       - name: Repack JRE
-        run: export TARGET_VERSION=${{ matrix.version }} && bash "9_repackjre.sh" $GITHUB_WORKSPACE/pojav $GITHUB_WORKSPACE/pojav/jre${{ matrix.version }}-pojav
+        run: |
+          export TARGET_VERSION=${{ matrix.version }} && bash "9_repackjre.sh" $GITHUB_WORKSPACE/pojav $GITHUB_WORKSPACE/pojav/jre${{ matrix.version }}-pojav
+          zip -r $GITHUB_WORKSPACE/jre${{ matrix.version }}-pojav.zip $GITHUB_WORKSPACE/pojav/jre${{ matrix.version }}-pojav/
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Update release
+        uses: svenstaro/upload-release-action@2.11.2
         with:
-          name: jre${{ matrix.version }}-pojav
-          path: pojav/jre${{ matrix.version }}-pojav/*
+          file: ./jre${{ matrix.version }}-pojav.zip
+          tag: rolling
