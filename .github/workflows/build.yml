@@ -98,6 +98,7 @@ jobs:
 
       - name: Update release
         uses: svenstaro/upload-release-action@2.11.2
+        if: github.repository_owner == 'MojoLauncher' && github.ref_name == 'buildjre17-21'
         with:
           file: ./jre${{ matrix.version }}-pojav.zip
           overwrite: true
