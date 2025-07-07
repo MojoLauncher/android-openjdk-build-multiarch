@@ -100,4 +100,5 @@ jobs:
         uses: svenstaro/upload-release-action@2.11.2
         with:
           file: ./jre${{ matrix.version }}-pojav.zip
+          overwrite: true
           tag: rolling
