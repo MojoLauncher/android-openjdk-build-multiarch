@@ -83,7 +83,7 @@ jobs:
     - name: Repack JRE
       run: |
           bash "repackjre.sh" $GITHUB_WORKSPACE/pojav $GITHUB_WORKSPACE/pojav/jre8-pojav
-          zip -r $GITHUB_WORKSPACE/jre8-pojav.zip $GITHUB_WORKSPACE/pojav/jre8-pojav/
+          zip -j -r $GITHUB_WORKSPACE/jre8-pojav.zip $GITHUB_WORKSPACE/pojav/jre8-pojav/
     - name: Update release
       uses: svenstaro/upload-release-action@2.11.2
       if: github.repository_owner == 'MojoLauncher' && github.ref_name == 'buildjre8'
