@@ -82,7 +82,7 @@ jobs:
           bash "repackjre.sh" $GITHUB_WORKSPACE/pojav $GITHUB_WORKSPACE/pojav/jre8-pojav
           zip -r $GITHUB_WORKSPACE/jre8-pojav.zip $GITHUB_WORKSPACE/pojav/jre8-pojav/
     - name: Update release
-      uses: johnwbyrd/update-release@v1
+      uses: johnwbyrd/update-release@v1.0.0
       with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: ./jre8-pojav.zip
