@@ -85,3 +85,4 @@ jobs:
       uses: svenstaro/upload-release-action@2.11.2
       with:
           file: ./jre8-pojav.zip
+          tag: rolling
