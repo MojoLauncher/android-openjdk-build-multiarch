@@ -24,6 +24,11 @@ if [[ "$BUILD_IOS" == "1" ]]; then
 namefreetype=build_android-${TARGET_SHORT}/lib/libfreetype
 else
   export PATH=$TOOLCHAIN/bin:$PATH
+  export CC=$TARGET-clang
+  export CXX=$TARGET-clang++
+  export AR=llvm-ar
+  export RANLIB=llvm-ranlib
+  export LD=ld.lld
   ./configure \
     --host=$TARGET \
     --prefix=`pwd`/build_android-${TARGET_SHORT} \

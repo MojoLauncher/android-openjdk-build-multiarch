@@ -37,19 +37,6 @@ index cc958da946..162e27c064 100644
          aarch64-* )
              config=`echo $1 | sed 's/^aarch64-/arm-/'`
              sub_args="$sub_args $config"
-diff --git a/common/autoconf/flags.m4 b/common/autoconf/flags.m4
-index 077efa297c..222090b21a 100644
---- a/common/autoconf/flags.m4
-+++ b/common/autoconf/flags.m4
-@@ -398,7 +398,7 @@ AC_DEFUN_ONCE([FLAGS_SETUP_COMPILER_FLAGS_FOR_JDK],
-       LDFLAGS_JDK="$LDFLAGS_JDK -Wl,-z,relro"
-       LEGACY_EXTRA_LDFLAGS="$LEGACY_EXTRA_LDFLAGS -Wl,-z,relro"
-     fi
--    $2CXXSTD_CXXFLAG="-std=gnu++98"
-+    $2CXXSTD_CXXFLAG="-std=gnu++11"
-     FLAGS_CXX_COMPILER_CHECK_ARGUMENTS([[$]$2CXXSTD_CXXFLAG -Werror],
-                                        [], [$2CXXSTD_CXXFLAG=""])
-     $2CXXFLAGS_JDK="${$2CXXFLAGS_JDK} ${$2CXXSTD_CXXFLAG}"
 diff --git a/common/autoconf/generated-configure.sh b/common/autoconf/generated-configure.sh
 index 62f8f42998..0f91308a81 100644
 --- a/common/autoconf/generated-configure.sh
@@ -230,11 +217,11 @@ index 0000000000..1466897409
 +  uint64_t pstate;
 +};
 +*/
-+struct user_fpsimd_struct {
++/*struct user_fpsimd_struct {
 +  __uint128_t vregs[32];
 +  uint32_t fpsr;
 +  uint32_t fpcr;
-+};
++};*/
 +typedef struct user_fpsimd_struct fpregset_t;
 +/*
 +#elif defined(__i386__)
@@ -1242,7 +1229,7 @@ new file mode 100644
 index 0000000000..567a19819f
 --- /dev/null
 +++ b/hotspot/agent/src/os/linux/thread_db.h
-@@ -0,0 +1,175 @@
+@@ -0,0 +1,179 @@
 +/*
 + * Copyright (C) 2013 The Android Open Source Project
 + *
@@ -1414,6 +1401,10 @@ index 0000000000..567a19819f
 +extern td_err_e td_thr_tlsbase(const td_thrhandle_t*, unsigned long int, psaddr_t*);
 +
 +extern td_err_e td_thr_tls_get_addr(const td_thrhandle_t*, psaddr_t, size_t, psaddr_t*);
++
++static inline int td_init() {
++   return TD_OK;
++}
 +
 +#ifdef __cplusplus
 +}
@@ -2873,7 +2864,7 @@ index 75886a6285..389cc6b85e 100644
 +    LANG := C++, \
 +    OPTIMIZATION := LOW, \
 +    CFLAGS := $(CXXFLAGS_JDKLIB) \
-+        -I$(JDK_TOPDIR)/src/share/tinyiconv, \
++        -I$(JDK_TOPDIR)/src/share/tinyiconv -std=c++17, \
 +    LDFLAGS := $(LDFLAGS_JDKLIB) $(LDFLAGS_CXX_JDK) \
 +        $(call SET_SHARED_LIBRARY_ORIGIN), \
 +    LDFLAGS_SUFFIX_posix := $(LIBCXX) -lc, \
@@ -59281,7 +59272,7 @@ new file mode 100644
 index 0000000000..b8a154237a
 --- /dev/null
 +++ b/jdk/src/share/tinyiconv/iconv.cpp
-@@ -0,0 +1,394 @@
+@@ -0,0 +1,390 @@
 +/*
 + * Copyright (C) 2017 The Android Open Source Project
 + * All rights reserved.
@@ -59313,10 +59304,6 @@ index 0000000000..b8a154237a
 +#ifdef __ANDROID__
 +
 +#include <stdint.h>
-+
-+// for char16_t and char32_t
-+typedef uint32_t char32_t;
-+typedef uint16_t char16_t;
 +
 +#include <ctype.h>
 +
@@ -60908,3 +60895,128 @@ index 303c96d788..aa555cc286 100644
 +    }
 +
      /**
+diff --git a/hotspot/agent/src/os/linux/elfmacros.h b/hotspot/agent/src/os/linux/elfmacros.h
+index 2dc0b611..bd4da119 100644
+--- a/hotspot/agent/src/os/linux/elfmacros.h
++++ b/hotspot/agent/src/os/linux/elfmacros.h
+@@ -35,7 +35,9 @@
+ #define ELF_ADDR        Elf64_Addr
+ #define ELF_AUXV        Elf64_auxv_t
+ 
++#ifndef __ANDROID__
+ #define ELF_ST_TYPE     ELF64_ST_TYPE
++#endif
+ 
+ #else
+ 
+@@ -48,7 +50,9 @@
+ #define ELF_ADDR        Elf32_Addr
+ #define ELF_AUXV        Elf32_auxv_t
+ 
++#ifndef __ANDROID__
+ #define ELF_ST_TYPE     ELF32_ST_TYPE
++#endif
+ 
+ #endif
+ 
+diff --git a/hotspot/make/linux/makefiles/rules.make b/hotspot/make/linux/makefiles/rules.make
+index 31c2e094..9bdc2c7e 100644
+--- a/hotspot/make/linux/makefiles/rules.make
++++ b/hotspot/make/linux/makefiles/rules.make
+@@ -32,7 +32,7 @@ DEMANGLE        = $(DEMANGLER) < $@ > .$@ && mv -f .$@ $@
+ 
+ # $(CC) is the c compiler (cc/gcc), $(CXX) is the c++ compiler (CC/g++).
+ CC_COMPILE       = $(CC) $(CXXFLAGS) $(CFLAGS)
+-CXX_COMPILE      = $(CXX) $(CXXFLAGS) $(CFLAGS)
++CXX_COMPILE      = $(CXX) $(CXXFLAGS) $(CFLAGS) -std=gnu++03
+ 
+ AS.S            = $(AS) $(ASFLAGS)
+ 
+@@ -52,7 +52,7 @@ PREPROCESS.CXX   = $(CXX_COMPILE) -E
+ # cross compiling the jvm with c2 requires host compilers to build
+ # adlc tool
+ 
+-HOST.CXX_COMPILE      = $(HOSTCXX) $(CXXFLAGS) $(CFLAGS)
++HOST.CXX_COMPILE      = $(HOSTCXX) $(CXXFLAGS)
+ HOST.COMPILE.CXX      = $(HOST.CXX_COMPILE) -c
+ HOST.LINK_NOPROF.CXX  = $(HOSTCXX) $(LFLAGS) $(AOUT_FLAGS)
+ 
+diff --git a/hotspot/agent/src/os/linux/ps_proc.c b/hotspot/agent/src/os/linux/ps_proc.c
+index c4d6a9ec..a2549000 100644
+--- a/hotspot/agent/src/os/linux/ps_proc.c
++++ b/hotspot/agent/src/os/linux/ps_proc.c
+@@ -282,8 +282,8 @@ static attach_state_t ptrace_attach(pid_t pid, char* err_buf, size_t err_buf_len
+       }
+     }
+     char buf[200];
+-    char* msg = strerror_r(errno, buf, sizeof(buf));
+-    snprintf(err_buf, err_buf_len, "ptrace(PTRACE_ATTACH, ..) failed for %d: %s", pid, msg);
++    int rerror = strerror_r(errno, buf, sizeof(buf));
++    snprintf(err_buf, err_buf_len, "ptrace(PTRACE_ATTACH, ..) failed for %d: %s", pid, rerror == 0 ? buf : "(error)");
+     print_error("%s\n", err_buf);
+     return ATTACH_FAIL;
+   } else {
+diff --git a/jdk/src/share/bin/splashscreen_stubs.c b/jdk/src/share/bin/splashscreen_stubs.c
+index 9c1f5148..32e32b0b 100644
+--- a/jdk/src/share/bin/splashscreen_stubs.c
++++ b/jdk/src/share/bin/splashscreen_stubs.c
+@@ -61,11 +61,11 @@ typedef char* (*SplashGetScaledImageName_t)(const char* fileName,
+ #define INVOKEV(name) _INVOKE(name, ,;)
+ 
+ int     DoSplashLoadMemory(void* pdata, int size) {
+-    INVOKE(SplashLoadMemory, NULL)(pdata, size);
++    INVOKE(SplashLoadMemory, 0)(pdata, size);
+ }
+ 
+ int     DoSplashLoadFile(const char* filename) {
+-    INVOKE(SplashLoadFile, NULL)(filename);
++    INVOKE(SplashLoadFile, 0)(filename);
+ }
+ 
+ void    DoSplashInit(void) {
+@@ -87,4 +87,4 @@ void    DoSplashSetScaleFactor(float scaleFactor) {
+ char*    DoSplashGetScaledImageName(const char* fileName, const char* jarName,
+                                     float* scaleFactor) {
+     INVOKE(SplashGetScaledImageName, NULL)(fileName, jarName, scaleFactor);
+-}
+\ No newline at end of file
++}
+diff --git a/jdk/src/share/native/java/util/zip/zlib/gzguts.h b/jdk/src/share/native/java/util/zip/zlib/gzguts.h
+index 8cce2c69..29f13902 100644
+--- a/jdk/src/share/native/java/util/zip/zlib/gzguts.h
++++ b/jdk/src/share/native/java/util/zip/zlib/gzguts.h
+@@ -53,6 +53,7 @@
+ #  define _POSIX_SOURCE
+ #endif
+ #include <fcntl.h>
++#include <unistd.h>
+ 
+ #ifdef _WIN32
+ #  include <stddef.h>
+diff --git a/jdk/src/solaris/native/java/lang/UNIXProcess_md.c b/jdk/src/solaris/native/java/lang/UNIXProcess_md.c
+index 9b510ad3..5c0709e8 100644
+--- a/jdk/src/solaris/native/java/lang/UNIXProcess_md.c
++++ b/jdk/src/solaris/native/java/lang/UNIXProcess_md.c
+@@ -393,7 +393,7 @@ static int copystrings(char *buf, int offset, const char * const *arg) {
+ __attribute_noinline__
+ #endif
+ 
+-#define START_CHILD_USE_CLONE 0  /* clone() currently disabled; see above. */
++//#define START_CHILD_USE_CLONE 0  /* clone() currently disabled; see above. */
+ 
+ #ifdef START_CHILD_USE_CLONE
+ static pid_t
+diff --git a/jdk/src/solaris/native/common/jdk_util_md.h b/jdk/src/solaris/native/common/jdk_util_md.h
+index c13bb779..aa02fc50 100644
+--- a/jdk/src/solaris/native/common/jdk_util_md.h
++++ b/jdk/src/solaris/native/common/jdk_util_md.h
+@@ -36,6 +36,9 @@
+ #define ISNANF(f) isnan(f)
+ #define ISNAND(d) isnan(d)
+ #elif defined(__linux__) || defined(_ALLBSD_SOURCE)
++#ifdef __ANDROID__
++#define __USE_GNU
++#endif
+ #include <math.h>
+ #define ISNANF(f) isnanf(f)
+ #define ISNAND(d) isnan(d)

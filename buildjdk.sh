@@ -28,10 +28,12 @@ export CFLAGS+=" -DLE_STANDALONE" # -I$FREETYPE_DIR -I$CUPS_DI
 # cp -R /usr/include/fontconfig $ANDROID_INCLUDE/
 
 if [[ "$BUILD_IOS" != "1" ]]; then
-  export CFLAGS+=" -O3 -D__ANDROID__"
+  export CFLAGS+=" -O3 -D__ANDROID__ --sysroot $TOOLCHAIN/sysroot -fPIC"
 
   ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
   ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
+  ln -s -f /usr/include/alsa $ANDROID_INCLUDE/
+
   AUTOCONF_x11arg="--x-includes=$ANDROID_INCLUDE/X11"
 
   export LDFLAGS+=" -L`pwd`/dummy_libs"
@@ -42,7 +44,7 @@ if [[ "$BUILD_IOS" != "1" ]]; then
   ar cru dummy_libs/libthread_db.a
 else
   ln -s -f /opt/X11/include/X11 $ANDROID_INCLUDE/
-  platform_args="--with-toolchain-type=clang SDKNAME=iphoneos"
+  platform_args="SDKNAME=iphoneos"
   # --disable-precompiled-headers
   AUTOCONF_x11arg="--with-x=/opt/X11/include/X11 --prefix=/usr/lib"
   sameflags="-arch arm64 -DHEADLESS=1 -I$PWD/ios-missing-include -Wno-implicit-function-declaration"
@@ -60,20 +62,25 @@ ln -s -f $CUPS_DIR/cups $ANDROID_INCLUDE/
 
 cd openjdk
 
+function apply_patch() {
+   git apply --reject --whitespace=fix ../patches/$1.diff || (echo "git apply failed ($2)" && exit 1)
+}
+
 # Apply patches
 git reset --hard
+git clean -xdf
 if [[ "$BUILD_IOS" != "1" ]]; then
-  git apply --reject --whitespace=fix ../patches/jdk8u_android.diff || echo "git apply failed (universal patch set)"
+  apply_patch jdk8u_android "universal patch set"
   if [[ "$TARGET_JDK" != "aarch32" ]]; then
-    git apply --reject --whitespace=fix ../patches/jdk8u_android_main.diff || echo "git apply failed (main non-universal patch set)"
+    apply_patch jdk8u_android_main "main non-universal patch set"
   else
-    git apply --reject --whitespace=fix ../patches/jdk8u_android_aarch32.diff || echo "git apply failed (aarch32 non-universal patch set)"
+    apply_patch jdk8u_android_aarch32 "main aarch32 patch set"
   fi
   if [[ "$TARGET_JDK" == "x86" ]]; then
-    git apply --reject --whitespace=fix ../patches/jdk8u_android_page_trap_fix.diff || echo "git apply failed (x86 page trap fix)"
+    apply_pathc jdk8u_android_page_trap_fix "x86 page trap fix"
   fi
 else
-  git apply --reject --whitespace=fix ../patches/jdk8u_ios.diff || echo "git apply failed (ios patch set)"
+  apply_patch jdk8u_ios "iOS patch set"
 fi
 
 #   --with-extra-cxxflags="$CXXFLAGS -Dchar16_t=uint16_t -Dchar32_t=uint32_t" \
@@ -86,10 +93,12 @@ fi
 #   --with-freemarker-jar=$FREEMARKER \
 #   --with-toolchain-type=clang \
 #   --with-native-debug-symbols=none \
+export LDFLAGS+="  -Wl,--undefined-version"
+export CXXFLAGS+=" -std=gnu++03"
 bash ./configure \
     --openjdk-target=$TARGET_PHYS \
     --with-extra-cflags="$CFLAGS" \
-    --with-extra-cxxflags="$CFLAGS" \
+    --with-extra-cxxflags="$CFLAGS $CXXFLAGS" \
     --with-extra-ldflags="$LDFLAGS" \
     --enable-option-checking=fatal \
     --with-jdk-variant=normal \
@@ -99,6 +108,8 @@ bash ./configure \
     --with-debug-level=$JDK_DEBUG_LEVEL \
     --with-fontconfig-include=$ANDROID_INCLUDE \
     --with-freetype-lib=$FREETYPE_DIR/lib \
+    --with-toolchain-type=clang \
+    --with-sysroot=$TOOLCHAIN/sysroot \
     --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
     $AUTOCONF_x11arg $AUTOCONF_EXTRA_ARGS \
     --x-libraries=/usr/lib \
