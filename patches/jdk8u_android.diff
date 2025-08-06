@@ -61061,3 +61061,15 @@ index 72c4077f..5ca44b5f 100644
                  # This is for Forte Analyzer profiling support.
                  AsyncGetCallTrace;
  
+diff --git a/jdk/make/mapfiles/libjava/mapfile-linux b/jdk/make/mapfiles/libjava/mapfile-linux
+index 012aaa23..f89b31f6 100644
+--- a/jdk/make/mapfiles/libjava/mapfile-linux
++++ b/jdk/make/mapfiles/libjava/mapfile-linux
+@@ -140,7 +140,6 @@ SUNWprivate_1.1 {
+ 		Java_java_lang_Double_longBitsToDouble;
+ 		Java_java_lang_Double_doubleToRawLongBits;
+ 		Java_java_lang_reflect_Proxy_defineClass0;
+-		Java_java_lang_Shutdown_runAllFinalizers;
+ 		Java_java_lang_Float_intBitsToFloat;
+ 		Java_java_lang_Float_floatToRawIntBits;
+ 		Java_java_lang_StrictMath_IEEEremainder;
