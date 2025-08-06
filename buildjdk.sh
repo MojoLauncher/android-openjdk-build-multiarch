@@ -126,6 +126,7 @@ bash ./configure \
     --with-freetype-lib=$FREETYPE_DIR/lib \
     --with-toolchain-type=clang \
     --with-sysroot=$TOOLCHAIN/sysroot \
+    --with-stdc++lib=static \
     --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
     $AUTOCONF_x11arg $AUTOCONF_EXTRA_ARGS \
     --x-libraries=/usr/lib \
