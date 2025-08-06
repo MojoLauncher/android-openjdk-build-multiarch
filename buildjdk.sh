@@ -101,6 +101,8 @@ export JDK_CXX=$(which clang++)
 
 export AUTOCONF_EXTRA_ARGS+=" BUILD_LD=$JDK_LD BUILD_CC=$JDK_CC BUILD_CXX=$JDK_CXX"
 
+sudo rm /usr/bin/ld
+
 bash ./configure \
     --openjdk-target=$TARGET_PHYS \
     --with-extra-cflags="$CFLAGS" \
