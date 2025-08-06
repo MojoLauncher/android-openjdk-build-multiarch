@@ -61020,3 +61020,16 @@ index c13bb779..aa02fc50 100644
  #include <math.h>
  #define ISNANF(f) isnanf(f)
  #define ISNAND(d) isnan(d)
+diff --git a/hotspot/make/linux/makefiles/vm.make b/hotspot/make/linux/makefiles/vm.make
+index 04b7c202..c105abff 100644
+--- a/hotspot/make/linux/makefiles/vm.make
++++ b/hotspot/make/linux/makefiles/vm.make
+@@ -251,7 +251,7 @@ VMDEF_PAT := ^UseSharedSpaces$$|$(VMDEF_PAT)
+ VMDEF_PAT := ^_ZN9Arguments17SharedArchivePathE$$|$(VMDEF_PAT)
+ 
+ vm.def: $(Res_Files) $(Obj_Files)
+-	$(QUIETLY) $(NM) --defined-only $(Obj_Files) | sort -k3 -u | \
++	$(QUIETLY) $(NM) --extern-only $(Obj_Files) | sort -k3 -u | \
+ 	awk '$$3 ~ /$(VMDEF_PAT)/ { print "\t" $$3 ";" }' > $@
+ 
+ mapfile_ext:
