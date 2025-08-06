@@ -29,7 +29,6 @@ export CFLAGS+=" -DLE_STANDALONE" # -I$FREETYPE_DIR -I$CUPS_DI
 
 if [[ "$BUILD_IOS" != "1" ]]; then
   export CFLAGS+=" -O3 -D__ANDROID__ --sysroot $TOOLCHAIN/sysroot -fPIC"
-
   ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
   ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
   ln -s -f /usr/include/alsa $ANDROID_INCLUDE/
@@ -96,9 +95,11 @@ fi
 export LDFLAGS+="  -Wl,--undefined-version"
 export CXXFLAGS+=" -std=gnu++03"
 
-export BUILD_LD=$(which ld.lld)
-export BUILD_CC=$(which clang)
-export BUILD_CXX=$(which clang++)
+export JDK_LD=$(which ld.lld)
+export JDK_CC=$(which clang)
+export JDK_CXX=$(which clang++)
+
+export AUTOCONF_EXTRA_ARGS+=" BUILD_LD=$JDK_LD BUILD_CC=$JDK_CC BUILD_CXX=$JDK_CXX"
 
 bash ./configure \
     --openjdk-target=$TARGET_PHYS \
