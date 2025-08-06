@@ -61073,3 +61073,15 @@ index 012aaa23..f89b31f6 100644
  		Java_java_lang_Float_intBitsToFloat;
  		Java_java_lang_Float_floatToRawIntBits;
  		Java_java_lang_StrictMath_IEEEremainder;
+diff --git a/jdk/make/mapfiles/libattach/mapfile-linux b/jdk/make/mapfiles/libattach/mapfile-linux
+index fbfdedfd..98f4f7f2 100644
+--- a/jdk/make/mapfiles/libattach/mapfile-linux
++++ b/jdk/make/mapfiles/libattach/mapfile-linux
+@@ -32,7 +32,6 @@ SUNWprivate_1.1 {
+ 	    Java_sun_tools_attach_LinuxVirtualMachine_connect;
+ 	    Java_sun_tools_attach_LinuxVirtualMachine_getLinuxThreadsManager;
+ 	    Java_sun_tools_attach_LinuxVirtualMachine_isLinuxThreads;
+-	    Java_sun_tools_attach_LinuxVirtualMachine_open;
+ 	    Java_sun_tools_attach_LinuxVirtualMachine_sendQuitTo;
+             Java_sun_tools_attach_LinuxVirtualMachine_sendQuitToChildrenOf;
+ 	    Java_sun_tools_attach_LinuxVirtualMachine_socket;
