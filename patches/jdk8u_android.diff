@@ -12,31 +12,6 @@ index 1aab2b303e..f38997fb41 100644
  	# First accept the basic system types.
  	# The portable systems comes first.
  	# Each alternative MUST END IN A *, to match a version number.
-diff --git a/common/autoconf/build-aux/config.sub b/common/autoconf/build-aux/config.sub
-index cc958da946..162e27c064 100644
---- a/common/autoconf/build-aux/config.sub
-+++ b/common/autoconf/build-aux/config.sub
-@@ -30,7 +30,8 @@
- DIR=`dirname $0`
- 
- # First, filter out everything that doesn't begin with "aarch64-"
--if ! echo $* | grep '^aarch64-' >/dev/null ; then
-+# or the mobile platforms (ios and android)
-+if ! echo $* | egrep "^aarch64-|-android" >/dev/null ; then
-     . $DIR/autoconf-config.sub "$@"
-     # autoconf-config.sub exits, so we never reach here, but just in
-     # case we do:
-@@ -41,6 +42,10 @@ while test $# -gt 0 ; do
-     case $1 in 
-         -- )   # Stop option processing
-             shift; break ;;
-+        *-android* )
-+            echo $1
-+            exit
-+            ;;
-         aarch64-* )
-             config=`echo $1 | sed 's/^aarch64-/arm-/'`
-             sub_args="$sub_args $config"
 diff --git a/common/autoconf/generated-configure.sh b/common/autoconf/generated-configure.sh
 index 62f8f42998..0f91308a81 100644
 --- a/common/autoconf/generated-configure.sh
