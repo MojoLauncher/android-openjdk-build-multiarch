@@ -76,7 +76,7 @@ if [[ "$BUILD_IOS" != "1" ]]; then
     apply_patch jdk8u_android_aarch32 "main aarch32 patch set"
   fi
   if [[ "$TARGET_JDK" == "x86" ]]; then
-    apply_pathc jdk8u_android_page_trap_fix "x86 page trap fix"
+    apply_patch jdk8u_android_page_trap_fix "x86 page trap fix"
   fi
 else
   apply_patch jdk8u_ios "iOS patch set"
