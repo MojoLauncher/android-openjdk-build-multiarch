@@ -95,6 +95,11 @@ fi
 #   --with-native-debug-symbols=none \
 export LDFLAGS+="  -Wl,--undefined-version"
 export CXXFLAGS+=" -std=gnu++03"
+
+export BUILD_LD=$(which ld.lld)
+export BUILD_CC=$(which clang)
+export BUILD_CXX=$(which clang++)
+
 bash ./configure \
     --openjdk-target=$TARGET_PHYS \
     --with-extra-cflags="$CFLAGS" \
