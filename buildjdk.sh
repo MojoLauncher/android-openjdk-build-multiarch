@@ -92,7 +92,7 @@ fi
 #   --with-freemarker-jar=$FREEMARKER \
 #   --with-toolchain-type=clang \
 #   --with-native-debug-symbols=none \
-export LDFLAGS+="  -Wl,--undefined-version"
+export LDFLAGS+="  -Wl,--undefined-version -fuse-ld=lld"
 export CXXFLAGS+=" -std=gnu++03"
 
 export JDK_LD=$(which ld.lld)
@@ -100,8 +100,6 @@ export JDK_CC=$(which clang)
 export JDK_CXX=$(which clang++)
 
 export AUTOCONF_EXTRA_ARGS+=" BUILD_LD=$JDK_LD BUILD_CC=$JDK_CC BUILD_CXX=$JDK_CXX"
-
-sudo rm /usr/bin/ld
 
 bash ./configure \
     --openjdk-target=$TARGET_PHYS \
