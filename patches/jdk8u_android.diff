@@ -61033,3 +61033,31 @@ index 04b7c202..c105abff 100644
  	awk '$$3 ~ /$(VMDEF_PAT)/ { print "\t" $$3 ";" }' > $@
  
  mapfile_ext:
+diff --git a/hotspot/make/linux/makefiles/mapfile-vers-product b/hotspot/make/linux/makefiles/mapfile-vers-product
+index e81f857f..813ca62e 100644
+--- a/hotspot/make/linux/makefiles/mapfile-vers-product
++++ b/hotspot/make/linux/makefiles/mapfile-vers-product
+@@ -261,9 +261,6 @@ SUNWprivate_1.1 {
+                 numa_warn;
+                 numa_error;
+ 
+-                # Needed because there is no JVM interface for this.
+-                sysThreadAvailableStackWithSlack;
+-
+                 # This is for Forte Analyzer profiling support.
+                 AsyncGetCallTrace;
+ 
+diff --git a/hotspot/make/linux/makefiles/mapfile-vers-debug b/hotspot/make/linux/makefiles/mapfile-vers-debug
+index 72c4077f..5ca44b5f 100644
+--- a/hotspot/make/linux/makefiles/mapfile-vers-debug
++++ b/hotspot/make/linux/makefiles/mapfile-vers-debug
+@@ -266,9 +266,6 @@ SUNWprivate_1.1 {
+                 numa_warn;
+                 numa_error;
+ 
+-                # Needed because there is no JVM interface for this.
+-                sysThreadAvailableStackWithSlack;
+-
+                 # This is for Forte Analyzer profiling support.
+                 AsyncGetCallTrace;
+ 
