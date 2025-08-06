@@ -28,7 +28,7 @@ export CFLAGS+=" -DLE_STANDALONE" # -I$FREETYPE_DIR -I$CUPS_DI
 # cp -R /usr/include/fontconfig $ANDROID_INCLUDE/
 
 if [[ "$BUILD_IOS" != "1" ]]; then
-  export CFLAGS+=" -O3 -D__ANDROID__ --sysroot $TOOLCHAIN/sysroot -fPIC"
+  export CFLAGS+=" -O3 -D__ANDROID__ -fPIC"
   ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
   ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
   ln -s -f /usr/include/alsa $ANDROID_INCLUDE/
