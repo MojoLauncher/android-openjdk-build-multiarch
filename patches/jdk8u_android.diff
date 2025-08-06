@@ -2780,8 +2780,8 @@ index 9368a9d508..347f30e6f5 100644
      LANG := C++, \
 -    CFLAGS := $(CFLAGS_JDKLIB) $(BUILD_LIBFONTMANAGER_CFLAGS_COMMON), \
 -    CXXFLAGS := $(CXXFLAGS_JDKLIB) $(BUILD_LIBFONTMANAGER_CFLAGS_COMMON), \
-+    CFLAGS := $(CFLAGS_JDKLIB) -fno-rtti $(BUILD_LIBFONTMANAGER_CFLAGS_COMMON), \
-+    CXXFLAGS := $(CXXFLAGS_JDKLIB) -fno-rtti $(BUILD_LIBFONTMANAGER_CFLAGS_COMMON), \
++    CFLAGS := $(CFLAGS_JDKLIB) -fno-rtti -fno-exceptions $(BUILD_LIBFONTMANAGER_CFLAGS_COMMON), \
++    CXXFLAGS := $(CXXFLAGS_JDKLIB) -fno-rtti -fno-exceptions $(BUILD_LIBFONTMANAGER_CFLAGS_COMMON), \
      OPTIMIZATION := $(LIBFONTMANAGER_OPTIMIZATION), \
      CFLAGS_windows = -I$(JDK_TOPDIR)/src/$(OPENJDK_TARGET_OS_API_DIR)/native/sun/windows \
          -DCC_NOEX, \
@@ -2790,7 +2790,7 @@ index 9368a9d508..347f30e6f5 100644
          $(call SET_SHARED_LIBRARY_ORIGIN), \
      LDFLAGS_SUFFIX := $(BUILD_LIBFONTMANAGER_FONTLIB), \
 -    LDFLAGS_SUFFIX_linux := -lawt $(LIBM) $(LIBCXX) -ljava -ljvm -lc, \
-+    LDFLAGS_SUFFIX_linux := -lawt -lawt_headless $(LIBM) -lsupc++ -ljava -ljvm -lc, \
++    LDFLAGS_SUFFIX_linux := -lawt -lawt_headless $(LIBM) -ljava -ljvm -lc -static-libstdc++, \
      LDFLAGS_SUFFIX_solaris := -lawt -lawt_headless -lc $(LIBM) $(LIBCXX) -ljava -ljvm, \
      LDFLAGS_SUFFIX_aix := -lawt -lawt_headless $(LIBM) $(LIBCXX) -ljava -ljvm,\
      LDFLAGS_SUFFIX_macosx := -lawt $(LIBM) $(LIBCXX) -undefined dynamic_lookup \
@@ -60937,7 +60937,7 @@ index 31c2e094..9bdc2c7e 100644
  # adlc tool
  
 -HOST.CXX_COMPILE      = $(HOSTCXX) $(CXXFLAGS) $(CFLAGS)
-+HOST.CXX_COMPILE      = $(HOSTCXX) $(CXXFLAGS)
++HOST.CXX_COMPILE      = $(HOSTCXX) $(CXXFLAGS) -std=gnu++03
  HOST.COMPILE.CXX      = $(HOST.CXX_COMPILE) -c
  HOST.LINK_NOPROF.CXX  = $(HOSTCXX) $(LFLAGS) $(AOUT_FLAGS)
  

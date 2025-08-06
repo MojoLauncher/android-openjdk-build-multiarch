@@ -99,13 +99,23 @@ export JDK_LD=$(which ld.lld)
 export JDK_CC=$(which clang)
 export JDK_CXX=$(which clang++)
 
+export JDK_CFLAGS=$CFLAGS
+export JDK_LDFLAGS=$LDFLAGS
+export JDK_CXXFLAGS=$CXXFLAGS
+
+export BUILD_CXXFLAGS="-std=gnu++03"
+
+unset CFLAGS
+unset LDFLAGS
+unset CXXFLAGS
+
 export AUTOCONF_EXTRA_ARGS+=" BUILD_LD=$JDK_LD BUILD_CC=$JDK_CC BUILD_CXX=$JDK_CXX"
 
 bash ./configure \
     --openjdk-target=$TARGET_PHYS \
-    --with-extra-cflags="$CFLAGS" \
-    --with-extra-cxxflags="$CFLAGS $CXXFLAGS" \
-    --with-extra-ldflags="$LDFLAGS" \
+    --with-extra-cflags="$JDK_CFLAGS" \
+    --with-extra-cxxflags="$JDK_CFLAGS $JDK_CXXFLAGS" \
+    --with-extra-ldflags="$JDK_LDFLAGS" \
     --enable-option-checking=fatal \
     --with-jdk-variant=normal \
     --with-jvm-variants="${JVM_VARIANTS/AND/,}" \
