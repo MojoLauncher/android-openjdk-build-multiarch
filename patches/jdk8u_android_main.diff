@@ -70,3 +70,25 @@ index cc958da946..162e27c064 100644
          aarch64-* )
              config=`echo $1 | sed 's/^aarch64-/arm-/'`
              sub_args="$sub_args $config"
+diff --git a/hotspot/src/cpu/aarch64/vm/immediate_aarch64.cpp b/hotspot/src/cpu/aarch64/vm/immediate_aarch64.cpp
+index 9f606ff3..7703b0f7 100644
+--- a/hotspot/src/cpu/aarch64/vm/immediate_aarch64.cpp
++++ b/hotspot/src/cpu/aarch64/vm/immediate_aarch64.cpp
+@@ -122,8 +122,16 @@ static inline u_int32_t uimm(u_int32_t val, int hi, int lo)
+ 
+ u_int64_t replicate(u_int64_t bits, int nbits, int count)
+ {
++  assert(count > 0, "must be");
++  assert(nbits > 0, "must be");
++  assert(count * nbits <= 64, "must be");
++  // Special case nbits == 64 since the shift below with that nbits value
++  // would result in undefined behavior.
++  if (nbits == 64) {
++    return bits;
++  }
++
+   u_int64_t result = 0;
+-  // nbits may be 64 in which case we want mask to be -1
+   u_int64_t mask = ones(nbits);
+   for (int i = 0; i < count ; i++) {
+     result <<= nbits;
