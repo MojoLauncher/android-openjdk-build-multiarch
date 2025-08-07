@@ -1407,7 +1407,7 @@ index 0e29abe8f8..856d8c7d06 100644
 +# statically link libc++.so, work with gcc but ignored by g++
 +# STATIC_STDCXX = -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
 +
-+STATIC_STDCXX = -Wl,-Bstatic -static-libstdc++ -Wl,-Bdynamic
++STATIC_STDCXX = -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
  # While the VM needs the above line, adlc needs a separate setting:
  ADLC_STATIC_STDCXX = -static-libstdc++
  
@@ -61069,7 +61069,7 @@ index 6efae578..aad2302a 100644
      # Test if stdc++ can be linked statically.
      AC_MSG_CHECKING([if static link of stdc++ is possible])
 -    STATIC_STDCXX_FLAGS="-Wl,-Bstatic -lstdc++ -lgcc -Wl,-Bdynamic"
-+    STATIC_STDCXX_FLAGS="-Wl,-Bstatic -static-libstdc++ -Wl,-Bdynamic"
++    STATIC_STDCXX_FLAGS="-Wl,-Bstatic -lstdc++ -Wl,-Bdynamic"
      AC_LANG_PUSH(C++)
      OLD_LIBS="$LIBS"
      OLD_CXX="$CXX"
@@ -61082,7 +61082,7 @@ index ad3f7f23..30be20f4 100644
      { $as_echo "$as_me:${as_lineno-$LINENO}: checking if static link of stdc++ is possible" >&5
  $as_echo_n "checking if static link of stdc++ is possible... " >&6; }
 -    STATIC_STDCXX_FLAGS="-Wl,-Bstatic -lstdc++ -lgcc -Wl,-Bdynamic"
-+    STATIC_STDCXX_FLAGS="-Wl,-Bstatic -static-libstdc++ -Wl,-Bdynamic"
++    STATIC_STDCXX_FLAGS="-Wl,-Bstatic -lstdc++ -Wl,-Bdynamic"
      ac_ext=cpp
  ac_cpp='$CXXCPP $CPPFLAGS'
  ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
