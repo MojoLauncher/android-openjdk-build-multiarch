@@ -1,5 +1,5 @@
 # Description: Set the environment variables for the build scripts.
-export NDK_VERSION=r27b
+export NDK_VERSION=r28c
 
 # Target version is either 17 or 21
 if [[ -z "$TARGET_VERSION" ]]
