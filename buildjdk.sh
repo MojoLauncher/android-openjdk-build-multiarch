@@ -40,6 +40,9 @@ if [[ "$BUILD_IOS" != "1" ]]; then
   mkdir -p dummy_libs
   ar cru dummy_libs/libpthread.a
   ar cru dummy_libs/libthread_db.a
+  if [[ "$TARGET_JDK" == "aarch64" || "$TARGET_JDK" == "x86_64" ]]; then
+     export LDFLAGS+=" -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384"
+  fi
 else
   ln -s -f /opt/X11/include/X11 $ANDROID_INCLUDE/
   platform_args="--with-toolchain-type=clang SDKNAME=iphoneos"
