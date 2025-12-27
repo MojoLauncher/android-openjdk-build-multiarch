@@ -46,6 +46,9 @@ if [[ "$BUILD_IOS" != "1" ]]; then
     RANLIB=${RANLIB} \
     AR=${AR} \
     STRIP=${STRIP} \
+    BUILD_CC=$(which clang) \
+    BUILD_CXX=$(which clang++) \
+    BUILD_LD=$(which ld.lld) \
     "
 
   AUTOCONF_x11arg="--x-includes=$ANDROID_INCLUDE/X11"
