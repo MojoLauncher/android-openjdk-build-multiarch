@@ -82,8 +82,10 @@ export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 # Configure and build.
 export AR=$TOOLCHAIN/bin/llvm-ar
 export AS=$TOOLCHAIN/bin/llvm-as
-export CC=$PWD/android-wrapped-clang
-export CXX=$PWD/android-wrapped-clang++
+#export CC=$PWD/android-wrapped-clang
+#export CXX=$PWD/android-wrapped-clang++
+export CC=$thecc
+export CXX=$thecxx
 export LD=$TOOLCHAIN/bin/ld
 export OBJCOPY=$TOOLCHAIN/bin/llvm-objcopy
 export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
