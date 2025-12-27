@@ -11,8 +11,8 @@ jobs:
   build_android:
     strategy:
       matrix:
-        arch: ["aarch32", "aarch64", "x86", "x86_64"]
-        version: [17, 25]
+        arch: ["aarch32", "aarch64", "x86_64"]
+        version: [25]
       fail-fast: false
 
     name: "Build Java ${{ matrix.version }} for Android ${{matrix.arch}}"
