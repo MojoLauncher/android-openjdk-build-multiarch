@@ -11,12 +11,13 @@ jobs:
   build_android:
     strategy:
       matrix:
-        arch: ["aarch32", "aarch64", "x86_64"]
-        version: [25]
+        arch: ["aarch32", "aarch64", "x86_64", "x86"]
+        version: [17, 21, 25]
       fail-fast: false
 
     name: "Build Java ${{ matrix.version }} for Android ${{matrix.arch}}"
     runs-on: ubuntu-22.04
+    if: ${{ matrix.arch != "x86" || matrix.version < 25 }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -58,7 +59,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        version: [17, 21]
+        version: [17, 25]
       fail-fast: false
     steps:
       - name: Checkout repository
@@ -81,6 +82,7 @@ jobs:
 
       - name: Get jre${{ matrix.version }}-x86
         uses: actions/download-artifact@v4
+        if: ${{ matrix.version < 25 }}
         with:
           name: jre${{ matrix.version }}-x86
           path: pojav
