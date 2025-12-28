@@ -37,7 +37,7 @@ if [[ "$BUILD_IOS" != "1" ]]; then
     --with-freetype-lib=$FREETYPE_DIR/lib \
     "
 
-  if [[ $TARGET_VERSION -eq 21 ]]; then
+  if [[ $TARGET_VERSION -gt 17 ]]; then
     platform_args+="--build=x86_64-unknown-linux-gnu \
     "
   fi
@@ -108,7 +108,6 @@ fi
 #   --with-extra-cflags="$CPPFLAGS" \
 
 bash ./configure \
-    --build=x86_64-unknown-linux-gnu \
     --openjdk-target=$TARGET \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \

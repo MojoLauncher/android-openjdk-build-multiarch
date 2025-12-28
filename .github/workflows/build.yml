@@ -37,18 +37,21 @@ jobs:
 
       - name: Upload JDK build output
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
           name: "jdk${{ matrix.version }}-${{matrix.arch}}"
           path: jdk${{ matrix.version }}*.tar.xz
 
       - name: Upload JRE build output
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
           name: "jre${{ matrix.version }}-${{matrix.arch}}"
           path: jre${{ matrix.version }}*.tar.xz
 
       - name: Upload JRE debuginfo build output
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
           name: "jre${{ matrix.version }}-debuginfo-${{matrix.arch}}"
           path: dizout
