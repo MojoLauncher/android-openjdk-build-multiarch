@@ -167,7 +167,7 @@ diff --git a/make/modules/java.base/lib/CoreLibraries.gmk b/make/modules/java.ba
 index 316103be4..0c5f30d3a 100644
 --- a/make/modules/java.base/lib/CoreLibraries.gmk
 +++ b/make/modules/java.base/lib/CoreLibraries.gmk
-@@ -28,6 +28,18 @@ ifeq ($(INCLUDE), true)
+@@ -28,6 +28,19 @@ ifeq ($(INCLUDE), true)
  
  ################################################################################
  
