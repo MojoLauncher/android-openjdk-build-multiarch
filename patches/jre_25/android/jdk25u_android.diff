@@ -179,6 +179,7 @@ index 316103be4..0c5f30d3a 100644
 +    NAME := tinyiconv, \
 +    OPTIMIZATION := HIGH, \
 +    CXXFLAGS := $(CXXFLAGS_JDKLIB), \
++    EXTRA_SRC := java.base:libtinyiconv \
 +))
 +
 +TARGETS += $(BUILD_LIBTINYICONV)
@@ -1473,3 +1474,16 @@ index f5573930d..b64e30046 100644
          }
  
          if (codeset == NULL) {
+diff --git a/src/hotspot/share/asm/register.hpp b/src/hotspot/share/asm/register.hpp
+index f406995b8..bdbabc1fe 100644
+--- a/src/hotspot/share/asm/register.hpp
++++ b/src/hotspot/share/asm/register.hpp
+@@ -93,7 +93,7 @@ template <class RegImpl> class ReverseRegSetIterator;
+ // A set of registers
+ template <class RegImpl>
+ class AbstractRegSet {
+-#ifndef ARM
++#if !defined(__arm__) && !defined(__aarch64__)
+   STATIC_ASSERT(RegImpl::number_of_registers <= 64);
+ #endif
+   uint64_t _bitset;
