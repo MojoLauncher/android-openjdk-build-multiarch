@@ -188,7 +188,7 @@ index 316103be4..0c5f30d3a 100644
  ## Build libverify
  ################################################################################
 diff --git a/make/modules/java.desktop/Lib.gmk b/make/modules/java.desktop/Lib.gmk
-index 830e0553c..b3671672e 100644
+index 830e0553c..c5cff5aa4 100644
 --- a/make/modules/java.desktop/Lib.gmk
 +++ b/make/modules/java.desktop/Lib.gmk
 @@ -37,7 +37,7 @@ $(call FillFindCache, $(wildcard $(TOPDIR)/src/java.desktop/*/native))
@@ -200,6 +200,15 @@ index 830e0553c..b3671672e 100644
    ##############################################################################
    # Build libjsound
    ##############################################################################
+@@ -79,7 +79,7 @@ ifeq ($(call isTargetOs, aix), false)
+       LIBS_windows := advapi32.lib dsound.lib ole32.lib user32.lib winmm.lib, \
+   ))
+ 
+-  TARGETS += $(BUILD_LIBJSOUND)
++#  TARGETS += $(BUILD_LIBJSOUND)
+ endif
+ 
+ ifeq ($(call isTargetOs, macosx), true)
 diff --git a/make/modules/java.instrument/Lib.gmk b/make/modules/java.instrument/Lib.gmk
 index 609814c86..472780111 100644
 --- a/make/modules/java.instrument/Lib.gmk
