@@ -1,4 +1,4 @@
-diff --git a/make/autoconf/flags-cflags.m4 b/make/autoconf/flags-cflags.m4
+/diff --git a/make/autoconf/flags-cflags.m4 b/make/autoconf/flags-cflags.m4
 index 3a61840e8..35dba8568 100644
 --- a/make/autoconf/flags-cflags.m4
 +++ b/make/autoconf/flags-cflags.m4
@@ -2300,3 +2300,15 @@ index 000000000..388016eb3
 +int posix_spawnattr_setsigdefault(posix_spawnattr_t *, const sigset_t *);
 +
 +#endif
+diff --git a/make/modules/jdk.hotspot.agent/Lib.gmk b/make/modules/jdk.hotspot.agent/Lib.gmk
+index ed8de631d..858ad08d7 100644
+--- a/make/modules/jdk.hotspot.agent/Lib.gmk
++++ b/make/modules/jdk.hotspot.agent/Lib.gmk
+@@ -80,6 +80,6 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBSAPROC, \
+     LIBS_windows := dbgeng.lib, \
+ ))
+ 
+-TARGETS += $(BUILD_LIBSAPROC)
++# TARGETS += $(BUILD_LIBSAPROC)
+ 
+ ################################################################################
