@@ -108,6 +108,7 @@ fi
 #   --with-extra-cflags="$CPPFLAGS" \
 
 bash ./configure \
+    --build=x86_64-unknown-linux-gnu \
     --openjdk-target=$TARGET \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
