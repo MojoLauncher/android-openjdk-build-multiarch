@@ -75,7 +75,9 @@ makeuni () {
 makeuni
 makearch aarch32 arm
 makearch aarch64 arm64
-makearch i386 x86
+if [[ $TARGET_VERSION -lt 25 ]]; then
+   makearch i386 x86
+fi
 makearch amd64 x86_64
 
 # if running under GitHub Actions, write commit sha, else formatted system date
