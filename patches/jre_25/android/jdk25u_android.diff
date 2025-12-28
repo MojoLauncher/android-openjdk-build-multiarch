@@ -1551,10 +1551,10 @@ index 000000000..745243d62
 +#endif /* _FPU_CONTROL_H */
 diff --git a/src/java.base/share/native/libtinyiconv/iconv.h b/src/java.base/share/native/libtinyiconv/iconv.h
 new file mode 100644
-index 000000000..a37ebd64c
+index 000000000..24a8788f7
 --- /dev/null
 +++ b/src/java.base/share/native/libtinyiconv/iconv.h
-@@ -0,0 +1,80 @@
+@@ -0,0 +1,89 @@
 +/*
 + * Copyright (C) 2017 The Android Open Source Project
 + * All rights reserved.
@@ -1585,6 +1585,8 @@ index 000000000..a37ebd64c
 +
 +#pragma once
 +
++
++
 +/**
 + * @file iconv.h
 + * @brief Character encoding conversion.
@@ -1592,6 +1594,9 @@ index 000000000..a37ebd64c
 +
 +#include <sys/cdefs.h>
 +#include <sys/types.h>
++#ifdef __cplusplus
++extern "C" {
++#endif
 +
 +/* If we just use void* in the typedef, the compiler exposes that in error messages. */
 +struct __iconv_t;
@@ -1635,6 +1640,10 @@ index 000000000..a37ebd64c
 + *
 + */
 +int iconv_close(iconv_t _Nonnull __converter);
++
++#ifdef __cplusplus
++}
++#endif
 diff --git a/src/java.base/share/native/libtinyiconv/iconv.cpp b/src/java.base/share/native/libtinyiconv/iconv.cpp
 new file mode 100644
 index 000000000..7018b6ce2
