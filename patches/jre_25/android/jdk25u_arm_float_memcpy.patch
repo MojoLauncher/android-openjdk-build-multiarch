@@ -1,0 +1,54 @@
+diff --git a/src/hotspot/share/prims/unsafe.cpp b/src/hotspot/share/prims/unsafe.cpp
+index a6300e814..f0768fdc5 100644
+--- a/src/hotspot/share/prims/unsafe.cpp
++++ b/src/hotspot/share/prims/unsafe.cpp
+@@ -263,6 +263,49 @@ class MemoryAccess : StackObj {
+   }
+ };
+ 
++// ARMv7 doesn't support unaligned float load/stores, so wrap them into a variable using memcpy
++#ifdef __arm__
++
++static void memcpy_v(volatile void *dest,
++            const volatile void *src, size_t n) {
++    const volatile unsigned char *src_c = (const volatile unsigned char*)src;
++    volatile unsigned char *dest_c      = (volatile unsigned char*)dest;
++
++    while (n > 0) {
++        n--;
++        dest_c[n] = src_c[n];
++    }
++}
++
++// TODO maybe needs better volatile get/put implementations
++#define MEMORY_ACCESS_MEMCPY(T) \
++template<> T MemoryAccess<T>::get() { \
++   GuardUnsafeAccess guard(_thread); \
++   T temp; \
++   memcpy_v(&temp, addr(), sizeof(T)); \
++   return temp; \
++} \
++template<> void MemoryAccess<T>::put(T x) { \
++   GuardUnsafeAccess guard(_thread); \
++   memcpy_v(addr(), &x, sizeof(T)); \
++} \
++template<> T MemoryAccess<T>::get_volatile() { \
++   GuardUnsafeAccess guard(_thread); \
++   T temp; \
++   memcpy_v(&temp, addr(), sizeof(T)); \
++   return temp; \
++} \
++template<> void MemoryAccess<T>::put_volatile(T x) { \
++   GuardUnsafeAccess guard(_thread); \
++   memcpy_v(addr(), &x, sizeof(T)); \
++} \
++
++MEMORY_ACCESS_MEMCPY(jfloat)
++MEMORY_ACCESS_MEMCPY(jdouble)
++
++#undef MEMORY_ACCESS_MEMCPY
++#endif // __arm__
++
+ // These functions allow a null base pointer with an arbitrary address.
+ // But if the base pointer is non-null, the offset should make some sense.
+ // That is, it should be in the range [0, MAX_OBJECT_SIZE].
