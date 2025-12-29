@@ -1,4 +1,4 @@
-/diff --git a/make/autoconf/flags-cflags.m4 b/make/autoconf/flags-cflags.m4
+diff --git a/make/autoconf/flags-cflags.m4 b/make/autoconf/flags-cflags.m4
 index 3a61840e8..35dba8568 100644
 --- a/make/autoconf/flags-cflags.m4
 +++ b/make/autoconf/flags-cflags.m4
@@ -2436,3 +2436,25 @@ index ed8de631d..858ad08d7 100644
 +# TARGETS += $(BUILD_LIBSAPROC)
  
  ################################################################################
+diff --git a/make/modules/java.desktop/lib/ClientLibraries.gmk b/make/modules/java.desktop/lib/ClientLibraries.gmk
+index a69b65180..2cd5bd39d 100644
+--- a/make/modules/java.desktop/lib/ClientLibraries.gmk
++++ b/make/modules/java.desktop/lib/ClientLibraries.gmk
+@@ -276,7 +276,7 @@ ifeq ($(ENABLE_HEADLESS_ONLY), false)
+       STATIC_LIB_EXCLUDE_OBJS := $(LIBSPLASHSCREEN_STATIC_LIB_EXCLUDE_OBJS), \
+   ))
+ 
+-  TARGETS += $(BUILD_LIBSPLASHSCREEN)
++ # TARGETS += $(BUILD_LIBSPLASHSCREEN)
+ endif
+ 
+ ################################################################################
+@@ -410,7 +410,7 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBFONTMANAGER, \
+     LDFLAGS_aix := -Wl$(COMMA)-berok, \
+     JDK_LIBS := libawt java.base:libjava $(LIBFONTMANAGER_JDK_LIBS), \
+     JDK_LIBS_macosx := libawt_lwawt, \
+-    JDK_LIBS_unix := java.base:libjvm, \
++    JDK_LIBS_unix := libawt_headless java.base:libjvm, \
+     LIBS := $(LIBFONTMANAGER_LIBS), \
+     LIBS_unix := $(LIBM), \
+     LIBS_macosx := \
