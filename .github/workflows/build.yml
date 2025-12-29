@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         arch: ["aarch32", "aarch64", "x86_64", "x86"]
-        version: [17, 21, 25]
+        version: [17, 25]
       fail-fast: false
 
     name: "Build Java ${{ matrix.version }} for Android ${{matrix.arch}}"
@@ -102,7 +102,7 @@ jobs:
 
       - name: Update release
         uses: svenstaro/upload-release-action@2.11.2
-        if: github.repository_owner == 'MojoLauncher' && github.ref_name == 'buildjre17-21'
+        if: github.repository_owner == 'MojoLauncher' && github.ref_name == 'buildjre17-25'
         with:
           file: ./jre${{ matrix.version }}-pojav.zip
           overwrite: true
