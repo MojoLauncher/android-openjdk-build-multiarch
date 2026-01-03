@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         arch: ["aarch32", "aarch64", "x86_64", "x86"]
-        version: [17, 25]
+        version: [17, 21,  25]
       fail-fast: false
 
     name: "Build Java ${{ matrix.version }} for Android ${{matrix.arch}}"
@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        version: [17, 25]
+        version: [21, 25]
       fail-fast: false
     steps:
       - name: Checkout repository
