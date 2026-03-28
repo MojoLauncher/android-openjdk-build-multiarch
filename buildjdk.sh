@@ -105,7 +105,6 @@ bash ./configure \
     --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
     $AUTOCONF_x11arg $AUTOCONF_EXTRA_ARGS \
     --x-libraries=/usr/lib \
-    --x-includes=/usr/include \
         $platform_args || \
 error_code=$?
 if [[ "$error_code" -ne 0 ]]; then
