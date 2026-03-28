@@ -78,6 +78,15 @@ index 62f8f42998..0f91308a81 100644
      *darwin*)
        VAR_OS=macosx
        VAR_OS_API=posix
+@@ -42322,7 +42322,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+   # Try to guess by grepping values from an object file.
+         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+-short int ascii_mm[] =
++unsigned short int ascii_mm[] =
+                  { 0x4249, 0x4765, 0x6E44, 0x6961, 0x6E53, 0x7953, 0 };
+                short int ascii_ii[] =
+                  { 0x694C, 0x5454, 0x656C, 0x6E45, 0x6944, 0x6E61, 0 };
 diff --git a/common/autoconf/platform.m4 b/common/autoconf/platform.m4
 index 945579d606..c54c580602 100644
 --- a/common/autoconf/platform.m4

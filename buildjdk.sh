@@ -92,7 +92,7 @@ fi
 bash ./configure \
     --openjdk-target=$TARGET_PHYS \
     --with-extra-cflags="$CFLAGS" \
-    --with-extra-cxxflags="-std=g++98 $CFLAGS" \
+    --with-extra-cxxflags="$CFLAGS" \
     --with-extra-ldflags="$LDFLAGS" \
     --enable-option-checking=fatal \
     --with-jdk-variant=normal \
