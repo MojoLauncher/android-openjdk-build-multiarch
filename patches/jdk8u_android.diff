@@ -37,19 +37,6 @@ index cc958da946..162e27c064 100644
          aarch64-* )
              config=`echo $1 | sed 's/^aarch64-/arm-/'`
              sub_args="$sub_args $config"
-diff --git a/common/autoconf/flags.m4 b/common/autoconf/flags.m4
-index 077efa297c..222090b21a 100644
---- a/common/autoconf/flags.m4
-+++ b/common/autoconf/flags.m4
-@@ -398,7 +398,7 @@ AC_DEFUN_ONCE([FLAGS_SETUP_COMPILER_FLAGS_FOR_JDK],
-       LDFLAGS_JDK="$LDFLAGS_JDK -Wl,-z,relro"
-       LEGACY_EXTRA_LDFLAGS="$LEGACY_EXTRA_LDFLAGS -Wl,-z,relro"
-     fi
--    $2CXXSTD_CXXFLAG="-std=gnu++98"
-+    $2CXXSTD_CXXFLAG="-std=gnu++11"
-     FLAGS_CXX_COMPILER_CHECK_ARGUMENTS([[$]$2CXXSTD_CXXFLAG -Werror],
-                                        [], [$2CXXSTD_CXXFLAG=""])
-     $2CXXFLAGS_JDK="${$2CXXFLAGS_JDK} ${$2CXXSTD_CXXFLAG}"
 diff --git a/common/autoconf/generated-configure.sh b/common/autoconf/generated-configure.sh
 index 62f8f42998..0f91308a81 100644
 --- a/common/autoconf/generated-configure.sh
@@ -1432,19 +1419,6 @@ index 0e29abe8f8..856d8c7d06 100644
  
  ifeq ($(USE_CLANG), true)
    # However we need to clean the code up before we can unrestrictedly enable this option with Clang
-@@ -279,8 +280,10 @@ endif
- #------------------------------------------------------------------------
- # Linker flags
- 
--# statically link libstdc++.so, work with gcc but ignored by g++
--STATIC_STDCXX = -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
-+# statically link libc++.so, work with gcc but ignored by g++
-+# STATIC_STDCXX = -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
-+
-+STATIC_STDCXX = -Wl,-Bstatic -lsupc++ -Wl,-Bdynamic
- # While the VM needs the above line, adlc needs a separate setting:
- ADLC_STATIC_STDCXX = -static-libstdc++
- 
 diff --git a/hotspot/src/cpu/aarch64/vm/vtableStubs_aarch64.cpp b/hotspot/src/cpu/aarch64/vm/vtableStubs_aarch64.cpp
 index 59d5b04de1..c31cde8646 100644
 --- a/hotspot/src/cpu/aarch64/vm/vtableStubs_aarch64.cpp
