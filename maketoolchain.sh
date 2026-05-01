@@ -6,7 +6,13 @@ set -e
 mkdir -p $NDK/generated-toolchains/android-${TARGET_SHORT}-toolchain
 pushd $NDK/generated-toolchains/android-${TARGET_SHORT}-toolchain
 
-wget -nc -nv https://github.com/MojoLauncher/gcc-toolchain/releases/download/prebuilt/gcc-13-${TARGET_SHORT}-21.tar.xz
+if [[ "$TARGET_SHORT" == "arm" ]]; then
+   export TARGET_API=9
+else
+   export TARGET_API=21
+fi
+
+wget -nc -nv https://github.com/MojoLauncher/gcc-toolchain/releases/download/prebuilt/gcc-13-${TARGET_SHORT}-${TARGET_API}.tar.xz
 tar xf gcc-13-${TARGET_SHORT}-21.tar.xz
 rm gcc-13-${TARGET_SHORT}-21.tar.xz
 
