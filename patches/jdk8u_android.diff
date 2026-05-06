@@ -59831,7 +59831,7 @@ index 7e193a9319..39c9cf6484 100644
  #endif
  
 diff --git a/jdk/src/solaris/native/java/net/net_util_md.c b/jdk/src/solaris/native/java/net/net_util_md.c
-index bd0bd8c2c9..f6273dff47 100644
+index bd0bd8c2..29a2e762 100644
 --- a/jdk/src/solaris/native/java/net/net_util_md.c
 +++ b/jdk/src/solaris/native/java/net/net_util_md.c
 @@ -36,7 +36,11 @@
@@ -59856,7 +59856,7 @@ index bd0bd8c2c9..f6273dff47 100644
  #include <arpa/inet.h>
  #include <net/route.h>
  #include <sys/utsname.h>
-@@ -319,6 +319,7 @@ jint  IPv6_supported()
+@@ -319,6 +323,7 @@ jint  IPv6_supported()
      SOCKADDR sa;
      socklen_t sa_len = sizeof(sa);
  
@@ -59864,7 +59864,7 @@ index bd0bd8c2c9..f6273dff47 100644
      fd = JVM_Socket(AF_INET6, SOCK_STREAM, 0) ;
      if (fd < 0) {
          /*
-@@ -363,6 +364,7 @@ jint  IPv6_supported()
+@@ -363,6 +368,7 @@ jint  IPv6_supported()
          }
      }
  #endif
@@ -59872,7 +59872,18 @@ index bd0bd8c2c9..f6273dff47 100644
  
      /**
       * On Solaris 8 it's possible to create INET6 sockets even
-@@ -577,7 +581,9 @@ static void initLoopbackRoutes() {
+@@ -413,7 +419,10 @@ jint  IPv6_supported()
+      *  we should also check if the APIs are available.
+      */
+     ipv6_fn = JVM_FindLibraryEntry(RTLD_DEFAULT, "inet_pton");
++// fd is not initialized because the check is skipped on Android
++#ifndef __ANDROID__
+     close(fd);
++#endif
+     if (ipv6_fn == NULL ) {
+         return JNI_FALSE;
+     } else {
+@@ -577,7 +586,9 @@ static void initLoopbackRoutes() {
           */
          if ( (dest_plen < 0 || dest_plen > 128)  ||
               (src_plen != 0) ||
@@ -59882,7 +59893,7 @@ index bd0bd8c2c9..f6273dff47 100644
               ((flags & RTF_REJECT) && dest_plen == 0) ) {
              continue;
          }
-@@ -667,6 +673,12 @@ static int nifs = 0;            /* number of entries used in array */
+@@ -667,6 +678,12 @@ static int nifs = 0;            /* number of entries used in array */
  /* not thread safe: make sure called once from one thread */
  
  static void initLocalIfs () {
@@ -59895,7 +59906,7 @@ index bd0bd8c2c9..f6273dff47 100644
      FILE *f;
      unsigned char staddr [16];
      char ifname [33];
-@@ -715,6 +727,7 @@ static void initLocalIfs () {
+@@ -715,6 +732,7 @@ static void initLocalIfs () {
          lif->index = index;
      }
      fclose (f);
@@ -59903,7 +59914,7 @@ index bd0bd8c2c9..f6273dff47 100644
  }
  
  /* return the scope_id (interface index) of the
-@@ -1105,7 +1118,9 @@ int getDefaultIPv6Interface(struct in6_addr *target_addr) {
+@@ -1105,7 +1123,9 @@ int getDefaultIPv6Interface(struct in6_addr *target_addr) {
           */
          if ( (dest_plen < 0 || dest_plen > 128)  ||
               (src_plen != 0) ||
