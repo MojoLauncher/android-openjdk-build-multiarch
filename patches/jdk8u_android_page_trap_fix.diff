@@ -15,24 +15,3 @@ index 96eed036..49a2ee1f 100644
    Thread::muxRelease(&SerializePageLock);
  }
  
-diff --git a/jdk/src/share/native/java/util/zip/zip_util.c b/jdk/src/share/native/java/util/zip/zip_util.c
-index 5fd6fea0..c7bd01a6 100644
---- a/jdk/src/share/native/java/util/zip/zip_util.c
-+++ b/jdk/src/share/native/java/util/zip/zip_util.c
-@@ -1315,12 +1315,14 @@ ZIP_GetEntryDataOffset(jzfile *zip, jzentry *entry)
-      * is installed on a very slow filesystem.)
-      */
-     if (entry->pos <= 0) {
--        unsigned char loc[LOCHDR];
-+        unsigned char loc[LOCHDR] = {0};
-         if (readFullyAt(zip->zfd, loc, LOCHDR, -(entry->pos)) == -1) {
-             zip->msg = "error reading zip file";
-             return -1;
-         }
--        if (GETSIG(loc) != LOCSIG) {
-+        unsigned long sig = GETSIG(loc);
-+        printf("sig: %lx exp: %lx\n", sig, LOCSIG);
-+        if (sig != LOCSIG) {
-             zip->msg = "invalid LOC header (bad signature)";
-             return -1;
-         }
