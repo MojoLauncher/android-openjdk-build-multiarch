@@ -31,7 +31,7 @@ index 5fd6fea0..c7bd01a6 100644
          }
 -        if (GETSIG(loc) != LOCSIG) {
 +        unsigned long sig = GETSIG(loc);
-+        printf("sig: %lx exp: %lx\n", sig, exp);
++        printf("sig: %lx exp: %lx\n", sig, LOCSIG);
 +        if (sig != LOCSIG) {
              zip->msg = "invalid LOC header (bad signature)";
              return -1;
