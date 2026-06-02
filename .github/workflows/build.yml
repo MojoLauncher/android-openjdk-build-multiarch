@@ -12,7 +12,7 @@ jobs:
   build_android:
     strategy:
       matrix:
-        arch: [ "aarch64", "aarch32", "x86_64", "x86" ]
+        arch: [ "x86" ]
       fail-fast: false
 
     name: "Build for Android ${{matrix.arch}}"
@@ -52,42 +52,42 @@ jobs:
         name: "jre8-debuginfo-${{matrix.arch}}"
         path: dizout
 
-  pojav:
-    needs: build_android
-    runs-on: ubuntu-24.04
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    - name: Install zip
-      run: sudo apt -y install zip
-    - name: Get jre8-aarch32
-      uses: actions/download-artifact@v4
-      with:
-        name: jre8-aarch32
-        path: pojav
-    - name: Get jre8-aarch64
-      uses: actions/download-artifact@v4
-      with:
-        name: jre8-aarch64
-        path: pojav
-    - name: Get jre8-x86
-      uses: actions/download-artifact@v4
-      with:
-        name: jre8-x86
-        path: pojav
-    - name: Get jre8-x86_64
-      uses: actions/download-artifact@v4
-      with:
-        name: jre8-x86_64
-        path: pojav
-    - name: Repack JRE
-      run: |
-          bash "repackjre.sh" $GITHUB_WORKSPACE/pojav $GITHUB_WORKSPACE/pojav/jre8-pojav
-          zip -j -r $GITHUB_WORKSPACE/jre8-pojav.zip $GITHUB_WORKSPACE/pojav/jre8-pojav/
-    - name: Update release
-      uses: svenstaro/upload-release-action@2.11.2
-      if: github.repository_owner == 'MojoLauncher' && github.ref_name == 'buildjre8'
-      with:
-          file: ./jre8-pojav.zip
-          tag: rolling
-          overwrite: true
+#  pojav:
+#    needs: build_android
+#    runs-on: ubuntu-24.04
+#    steps:
+#    - name: Checkout repository
+#      uses: actions/checkout@v4
+#    - name: Install zip
+#      run: sudo apt -y install zip
+#    - name: Get jre8-aarch32
+#      uses: actions/download-artifact@v4
+#      with:
+#        name: jre8-aarch32
+#        path: pojav
+#    - name: Get jre8-aarch64
+#      uses: actions/download-artifact@v4
+#      with:
+#        name: jre8-aarch64
+#        path: pojav
+#    - name: Get jre8-x86
+#      uses: actions/download-artifact@v4
+#      with:
+#        name: jre8-x86
+#        path: pojav
+#    - name: Get jre8-x86_64
+#      uses: actions/download-artifact@v4
+#      with:
+#        name: jre8-x86_64
+#        path: pojav
+#    - name: Repack JRE
+#      run: |
+#          bash "repackjre.sh" $GITHUB_WORKSPACE/pojav $GITHUB_WORKSPACE/pojav/jre8-pojav
+#          zip -j -r $GITHUB_WORKSPACE/jre8-pojav.zip $GITHUB_WORKSPACE/pojav/jre8-pojav/
+#    - name: Update release
+#      uses: svenstaro/upload-release-action@2.11.2
+#      if: github.repository_owner == 'MojoLauncher' && github.ref_name == 'buildjre8'
+#      with:
+#          file: ./jre8-pojav.zip
+#          tag: rolling
+#          overwrite: true
