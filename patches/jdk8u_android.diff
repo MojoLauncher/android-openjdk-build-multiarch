@@ -2285,17 +2285,18 @@ index 2d3880b363..77eb2ac3fd 100644
    // Loads .dll/.so and
    // in case of error it checks if .dll/.so was built for the
    // same architecture as Hotspot is running on
-@@ -2424,6 +2482,19 @@ void os::jvm_path(char *buf, jint buflen) {
+@@ -2443,6 +2501,20 @@ void os::jvm_path(char *buf, jint buflen) {
                  CAST_FROM_FN_PTR(address, os::jvm_path),
                  dli_fname, sizeof(dli_fname), NULL);
    assert(ret, "cannot locate libjvm");
 +#ifdef __ANDROID__
++   const char* libname = dli_fname;
 +  if (dli_fname[0] == '\0') {
-+    return;
++    libname = "libjvm.so"; // Work around ASUS MM linker bug
 +  }
 +
 +  if (strchr(dli_fname, '/') == NULL) {
-+    bool ok = read_so_path_from_maps(dli_fname, buf, buflen);
++    bool ok = read_so_path_from_maps(libname, buf, buflen);
 +    assert(ok, "unable to turn relative libjvm.so path into absolute");
 +    return;
 +  }
