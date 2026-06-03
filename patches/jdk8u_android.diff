@@ -37,19 +37,6 @@ index cc958da946..162e27c064 100644
          aarch64-* )
              config=`echo $1 | sed 's/^aarch64-/arm-/'`
              sub_args="$sub_args $config"
-diff --git a/common/autoconf/flags.m4 b/common/autoconf/flags.m4
-index 077efa297c..222090b21a 100644
---- a/common/autoconf/flags.m4
-+++ b/common/autoconf/flags.m4
-@@ -398,7 +398,7 @@ AC_DEFUN_ONCE([FLAGS_SETUP_COMPILER_FLAGS_FOR_JDK],
-       LDFLAGS_JDK="$LDFLAGS_JDK -Wl,-z,relro"
-       LEGACY_EXTRA_LDFLAGS="$LEGACY_EXTRA_LDFLAGS -Wl,-z,relro"
-     fi
--    $2CXXSTD_CXXFLAG="-std=gnu++98"
-+    $2CXXSTD_CXXFLAG="-std=gnu++11"
-     FLAGS_CXX_COMPILER_CHECK_ARGUMENTS([[$]$2CXXSTD_CXXFLAG -Werror],
-                                        [], [$2CXXSTD_CXXFLAG=""])
-     $2CXXFLAGS_JDK="${$2CXXFLAGS_JDK} ${$2CXXSTD_CXXFLAG}"
 diff --git a/common/autoconf/generated-configure.sh b/common/autoconf/generated-configure.sh
 index 62f8f42998..0f91308a81 100644
 --- a/common/autoconf/generated-configure.sh
@@ -1432,19 +1419,6 @@ index 0e29abe8f8..856d8c7d06 100644
  
  ifeq ($(USE_CLANG), true)
    # However we need to clean the code up before we can unrestrictedly enable this option with Clang
-@@ -279,8 +280,10 @@ endif
- #------------------------------------------------------------------------
- # Linker flags
- 
--# statically link libstdc++.so, work with gcc but ignored by g++
--STATIC_STDCXX = -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
-+# statically link libc++.so, work with gcc but ignored by g++
-+# STATIC_STDCXX = -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
-+
-+STATIC_STDCXX = -Wl,-Bstatic -lsupc++ -Wl,-Bdynamic
- # While the VM needs the above line, adlc needs a separate setting:
- ADLC_STATIC_STDCXX = -static-libstdc++
- 
 diff --git a/hotspot/src/cpu/aarch64/vm/vtableStubs_aarch64.cpp b/hotspot/src/cpu/aarch64/vm/vtableStubs_aarch64.cpp
 index 59d5b04de1..c31cde8646 100644
 --- a/hotspot/src/cpu/aarch64/vm/vtableStubs_aarch64.cpp
@@ -2311,17 +2285,18 @@ index 2d3880b363..77eb2ac3fd 100644
    // Loads .dll/.so and
    // in case of error it checks if .dll/.so was built for the
    // same architecture as Hotspot is running on
-@@ -2424,6 +2482,19 @@ void os::jvm_path(char *buf, jint buflen) {
+@@ -2443,6 +2501,20 @@ void os::jvm_path(char *buf, jint buflen) {
                  CAST_FROM_FN_PTR(address, os::jvm_path),
                  dli_fname, sizeof(dli_fname), NULL);
    assert(ret, "cannot locate libjvm");
 +#ifdef __ANDROID__
++   const char* libname = dli_fname;
 +  if (dli_fname[0] == '\0') {
-+    return;
++    libname = "libjvm.so"; // Work around ASUS MM linker bug
 +  }
 +
 +  if (strchr(dli_fname, '/') == NULL) {
-+    bool ok = read_so_path_from_maps(dli_fname, buf, buflen);
++    bool ok = read_so_path_from_maps(libname, buf, buflen);
 +    assert(ok, "unable to turn relative libjvm.so path into absolute");
 +    return;
 +  }
@@ -2799,7 +2774,7 @@ index 9368a9d508..347f30e6f5 100644
          $(call SET_SHARED_LIBRARY_ORIGIN), \
      LDFLAGS_SUFFIX := $(BUILD_LIBFONTMANAGER_FONTLIB), \
 -    LDFLAGS_SUFFIX_linux := -lawt $(LIBM) $(LIBCXX) -ljava -ljvm -lc, \
-+    LDFLAGS_SUFFIX_linux := -lawt -lawt_headless $(LIBM) -lsupc++ -ljava -ljvm -lc, \
++    LDFLAGS_SUFFIX_linux := -lawt -lawt_headless $(LIBM) $(LIBCXX) -ljava -ljvm -lc, \
      LDFLAGS_SUFFIX_solaris := -lawt -lawt_headless -lc $(LIBM) $(LIBCXX) -ljava -ljvm, \
      LDFLAGS_SUFFIX_aix := -lawt -lawt_headless $(LIBM) $(LIBCXX) -ljava -ljvm,\
      LDFLAGS_SUFFIX_macosx := -lawt $(LIBM) $(LIBCXX) -undefined dynamic_lookup \
@@ -59857,7 +59832,7 @@ index 7e193a9319..39c9cf6484 100644
  #endif
  
 diff --git a/jdk/src/solaris/native/java/net/net_util_md.c b/jdk/src/solaris/native/java/net/net_util_md.c
-index bd0bd8c2c9..f6273dff47 100644
+index bd0bd8c2..29a2e762 100644
 --- a/jdk/src/solaris/native/java/net/net_util_md.c
 +++ b/jdk/src/solaris/native/java/net/net_util_md.c
 @@ -36,7 +36,11 @@
@@ -59882,7 +59857,7 @@ index bd0bd8c2c9..f6273dff47 100644
  #include <arpa/inet.h>
  #include <net/route.h>
  #include <sys/utsname.h>
-@@ -319,6 +319,7 @@ jint  IPv6_supported()
+@@ -319,6 +323,7 @@ jint  IPv6_supported()
      SOCKADDR sa;
      socklen_t sa_len = sizeof(sa);
  
@@ -59890,7 +59865,7 @@ index bd0bd8c2c9..f6273dff47 100644
      fd = JVM_Socket(AF_INET6, SOCK_STREAM, 0) ;
      if (fd < 0) {
          /*
-@@ -363,6 +364,7 @@ jint  IPv6_supported()
+@@ -363,6 +368,7 @@ jint  IPv6_supported()
          }
      }
  #endif
@@ -59898,7 +59873,18 @@ index bd0bd8c2c9..f6273dff47 100644
  
      /**
       * On Solaris 8 it's possible to create INET6 sockets even
-@@ -577,7 +581,9 @@ static void initLoopbackRoutes() {
+@@ -413,7 +419,10 @@ jint  IPv6_supported()
+      *  we should also check if the APIs are available.
+      */
+     ipv6_fn = JVM_FindLibraryEntry(RTLD_DEFAULT, "inet_pton");
++// fd is not initialized because the check is skipped on Android
++#ifndef __ANDROID__
+     close(fd);
++#endif
+     if (ipv6_fn == NULL ) {
+         return JNI_FALSE;
+     } else {
+@@ -577,7 +586,9 @@ static void initLoopbackRoutes() {
           */
          if ( (dest_plen < 0 || dest_plen > 128)  ||
               (src_plen != 0) ||
@@ -59908,7 +59894,7 @@ index bd0bd8c2c9..f6273dff47 100644
               ((flags & RTF_REJECT) && dest_plen == 0) ) {
              continue;
          }
-@@ -667,6 +673,12 @@ static int nifs = 0;            /* number of entries used in array */
+@@ -667,6 +678,12 @@ static int nifs = 0;            /* number of entries used in array */
  /* not thread safe: make sure called once from one thread */
  
  static void initLocalIfs () {
@@ -59921,7 +59907,7 @@ index bd0bd8c2c9..f6273dff47 100644
      FILE *f;
      unsigned char staddr [16];
      char ifname [33];
-@@ -715,6 +727,7 @@ static void initLocalIfs () {
+@@ -715,6 +732,7 @@ static void initLocalIfs () {
          lif->index = index;
      }
      fclose (f);
@@ -59929,7 +59915,7 @@ index bd0bd8c2c9..f6273dff47 100644
  }
  
  /* return the scope_id (interface index) of the
-@@ -1105,7 +1118,9 @@ int getDefaultIPv6Interface(struct in6_addr *target_addr) {
+@@ -1105,7 +1123,9 @@ int getDefaultIPv6Interface(struct in6_addr *target_addr) {
           */
          if ( (dest_plen < 0 || dest_plen > 128)  ||
               (src_plen != 0) ||
@@ -60875,20 +60861,24 @@ index 5948302713..76755e98aa 100644
  
  jint
  AWT_OnLoad(JavaVM *vm, void *reserved)
-@@ -117,7 +140,11 @@ AWT_OnLoad(JavaVM *vm, void *reserved)
+@@ -117,7 +142,16 @@ AWT_OnLoad(JavaVM *vm, void *reserved)
  
      /* Get address of this library and the directory containing it. */
      dladdr((void *)AWT_OnLoad, &dlinfo);
 -    realpath((char *)dlinfo.dli_fname, buf);
-+     if (strrchr(dlinfo.dli_fname, '/') != NULL) {
-+        realpath((char *)dlinfo.dli_fname, buf);
-+     }else{
-+         read_so_path_from_maps(dlinfo.dli_fname,buf);
-+     }
++#ifdef __ANDROID__
++    if(dlinfo.dli_fname[0] == '\0') {
++       dlinfo.dli_fname = "libawt.so"; // workaround for ASUS linker bug
++    }
++#endif
++    if (strrchr(dlinfo.dli_fname, '/') != NULL) {
++       realpath((char *)dlinfo.dli_fname, buf);
++    }else{
++       read_so_path_from_maps(dlinfo.dli_fname,buf);
++    }
      len = strlen(buf);
      p = strrchr(buf, '/');
  
-
 diff --git a/jdk/src/share/classes/sun/security/util/ManifestEntryVerifier.java b/jdk/src/share/classes/sun/security/util/ManifestEntryVerifier.java
 index 303c96d788..aa555cc286 100644
 --- a/jdk/src/share/classes/sun/security/util/ManifestEntryVerifier.java
@@ -60908,3 +60898,28 @@ index 303c96d788..aa555cc286 100644
 +    }
 +
      /**
+diff --git a/common/autoconf/generated-configure.sh b/common/autoconf/generated-configure.sh
+index 0dadac60..c18c9fb2 100644
+--- a/common/autoconf/generated-configure.sh
++++ b/common/autoconf/generated-configure.sh
+@@ -42322,16 +42322,16 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+   # Try to guess by grepping values from an object file.
+ 	 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+-short int ascii_mm[] =
++unsigned short int ascii_mm[] =
+ 		  { 0x4249, 0x4765, 0x6E44, 0x6961, 0x6E53, 0x7953, 0 };
+-		short int ascii_ii[] =
++		unsigned short int ascii_ii[] =
+ 		  { 0x694C, 0x5454, 0x656C, 0x6E45, 0x6944, 0x6E61, 0 };
+ 		int use_ascii (int i) {
+ 		  return ascii_mm[i] + ascii_ii[i];
+ 		}
+-		short int ebcdic_ii[] =
++		unsigned short int ebcdic_ii[] =
+ 		  { 0x89D3, 0xE3E3, 0x8593, 0x95C5, 0x89C4, 0x9581, 0 };
+-		short int ebcdic_mm[] =
++		unsigned short int ebcdic_mm[] =
+ 		  { 0xC2C9, 0xC785, 0x95C4, 0x8981, 0x95E2, 0xA8E2, 0 };
+ 		int use_ebcdic (int i) {
+ 		  return ebcdic_mm[i] + ebcdic_ii[i];
