@@ -1,0 +1,13 @@
+diff --git a/common/autoconf/version-numbers b/common/autoconf/version-numbers
+index 9f56e38e..82c4ef8f 100644
+--- a/common/autoconf/version-numbers
++++ b/common/autoconf/version-numbers
+@@ -29,7 +29,7 @@ JDK_MICRO_VERSION=0
+ JDK_UPDATE_VERSION=502
+ LAUNCHER_NAME=openjdk
+ PRODUCT_NAME=OpenJDK
+-PRODUCT_SUFFIX="Runtime Environment"
++PRODUCT_SUFFIX="Runtime Environment (Android)"
+ JDK_RC_PLATFORM_NAME=Platform
+ COMPANY_NAME=N/A
+ 
