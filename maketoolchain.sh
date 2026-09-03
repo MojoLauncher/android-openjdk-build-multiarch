@@ -6,9 +6,9 @@ set -e
 mkdir -p $NDK/generated-toolchains/android-${TARGET_SHORT}-toolchain
 pushd $NDK/generated-toolchains/android-${TARGET_SHORT}-toolchain
 
-wget -nc -nv https://github.com/MojoLauncher/gcc-toolchain/releases/download/prebuilt/gcc-13-${TARGET_SHORT}-21.tar.xz
-tar xf gcc-13-${TARGET_SHORT}-21.tar.xz
-rm gcc-13-${TARGET_SHORT}-21.tar.xz
+wget -nc -nv https://github.com/MojoLauncher/gcc-toolchain/releases/download/prebuilt-gcc16/gcc-${TARGET_SHORT}-21.tar.xz
+tar xf gcc-${TARGET_SHORT}-21.tar.xz
+rm gcc-${TARGET_SHORT}-21.tar.xz
 
 #set +e
 # I didn't pay enough attention :(
