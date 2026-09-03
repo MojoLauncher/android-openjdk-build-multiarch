@@ -100,7 +100,7 @@ fi
 #   --with-native-debug-symbols=none \
 bash ./configure \
     --openjdk-target=$TARGET_PHYS \
-    --with-extra-cflags="$CFLAGS" \
+    --with-extra-cflags="$CFLAGS -std=c17" \
     --with-extra-cxxflags="$CFLAGS" \
     --with-extra-ldflags="$LDFLAGS" \
     --enable-option-checking=fatal \
