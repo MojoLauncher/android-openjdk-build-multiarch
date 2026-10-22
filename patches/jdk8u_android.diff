@@ -60622,6 +60622,24 @@ index cb4cfc0190..7c0e2eacce 100644
      {
          capabilities |= sun_nio_fs_UnixNativeDispatcher_SUPPORTS_OPENAT;
      }
+@@ -550,7 +550,7 @@ Java_sun_nio_fs_UnixNativeDispatcher_chmod0(JNIEnv* env, jclass this,
+ 
+     RESTARTABLE(chmod(path, (mode_t)mode), err);
+     if (err == -1) {
+-        throwUnixException(env, errno);
++        printf("chmod %s %#o failed, let's pretend it didn't happen\n", path, (int) mode);
+     }
+ }
+ 
+@@ -562,7 +562,7 @@ Java_sun_nio_fs_UnixNativeDispatcher_fchmod(JNIEnv* env, jclass this, jint filed
+ 
+     RESTARTABLE(fchmod((int)filedes, (mode_t)mode), err);
+     if (err == -1) {
+-        throwUnixException(env, errno);
++        printf("chmod fd %i %#o failed, let's pretend it didn't happen\n", (int) filedes, (int) mode);
+     }
+ }
+ 
 @@ -627,9 +698,24 @@ JNIEXPORT void JNICALL
  Java_sun_nio_fs_UnixNativeDispatcher_futimes(JNIEnv* env, jclass this, jint filedes,
      jlong accessTime, jlong modificationTime)
