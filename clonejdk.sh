@@ -9,3 +9,5 @@ else
 
 git clone --depth 1 https://github.com/openjdk/jdk8u openjdk
 fi
+
+./remove_emudhra.sh
